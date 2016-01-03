@@ -16,13 +16,15 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.ninjaframework</groupId>
-    <artifactId>ninja-ebean</artifactId>
+    <artifactId>ninja-jooq</artifactId>
     <packaging>pom</packaging>
-    <version>1.5.2-SNAPSHOT</version>
+    <version>0.0.1</version>
     <url>http://www.ninjaframework.org</url>
 
     <!-- Deploy to central maven using the oss-parent of sonatype -->
@@ -35,9 +37,9 @@
 
     <modules>
         <!-- the module is the core thing -->
-        <module>ninja-ebean-module</module>
+        <module>ninja-jooq-module</module>
         <!-- The demo is a ninja app acting as integration test and demo -->
-        <module>ninja-ebean-demo</module>
+        <module>ninja-jooq-demo</module>
     </modules>
 
     <!-- pin encoding to utf-8 -->
@@ -48,11 +50,16 @@
         <ninja.version>4.0.5</ninja.version>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+    </dependencies>
     <!-- Fix version 1.6 of java compiler in all submodules: -->
     <build>
-
         <pluginManagement>
-
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -68,14 +75,14 @@
     </build>
 
     <scm>
-        <url>https://github.com/ninjaframework/ninja-ebean</url>
-        <connection>scm:git://github.com/ninjaframework/ninja-ebean.git</connection>
-        <developerConnection>scm:git:git@github.com:ninjaframework/ninja-ebean.git</developerConnection>
+        <url>https://github.com/jschaf/ninja-jooq</url>
+        <connection>scm:git://github.com/jschaf/ninja-jooq.git</connection>
+        <developerConnection>scm:git:git@github.com:jschaf/ninja-jooq.git</developerConnection>
     </scm>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/ninjaframework/ninja-ebean/issues/</url>
+        <url>https://github.com/jschaf/ninja-jooq/issues/</url>
     </issueManagement>
 
     <mailingLists>

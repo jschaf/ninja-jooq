@@ -73,7 +73,7 @@ public class NinjaJooqLifecycle {
         logger.info("Starting jOOQ Module.");
 
         // Setup basic parameters
-        boolean jooqRenderSchema = ninjaProperties.getBooleanWithDefault(renderSchema, false);
+        boolean jooqRenderSchema = ninjaProperties.getBooleanWithDefault(renderSchema, true);
 
         //renderMapping
 
@@ -114,7 +114,7 @@ public class NinjaJooqLifecycle {
 
         String connectionUrl = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_URL);
         String connectionUsername = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_USERNAME);
-        String connectionPassword = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_PASSWORD);
+        String connectionPassword = ninjaProperties.getWithDefault(NinjaConstant.DB_CONNECTION_PASSWORD, "");
 
         BasicDataSource connectionPool = new BasicDataSource();
 

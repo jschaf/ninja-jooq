@@ -16,22 +16,22 @@
 
 package controllers;
 
-import java.util.List;
-import java.util.Map;
 
-import models.GuestBookEntry;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import ninja.Result;
 import ninja.Results;
 import ninja.i18n.Lang;
 import ninja.params.Param;
-
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
 
-import com.avaje.ebean.EbeanServer;
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.util.List;
+import java.util.Map;
+
+import static models.Tables.AUTHOR;
+import static models.Tables.BOOK;
 
 @Singleton
 public class ApplicationController {
@@ -54,12 +54,17 @@ public class ApplicationController {
 
     public Result index() {
 
-        // Get all guestbookentries now:
-        List<GuestBookEntry> guestBookEntries = ebeanServer.find(
-                GuestBookEntry.class).findList();
-        
+        org.jooq.Result<?> result = database.select(BOOK.TITLE)
+                .from(AUTHOR)
+                .join(BOOK)
+                .on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
+                .orderBy(BOOK.ID.asc())
+                .fetch();
+
+        List<String> titles = result.getValues(BOOK.TITLE);
+
         Map<String, Object> toRender = Maps.newHashMap();
-        toRender.put("guestBookEntries", guestBookEntries);
+        toRender.put("titles", titles);
 
         // Default rendering is simple by convention
         // This renders the page in views/ApplicationController/index.ftl.html
@@ -70,9 +75,7 @@ public class ApplicationController {
     public Result post(@Param("email") String email,
                        @Param("content") String content) {
 
-        GuestBookEntry guestbookEntry = new GuestBookEntry(email, content);
-        ebeanServer.save(guestbookEntry);
-        
+
         // ... and redirect to main page
         return Results.redirect("/");
 

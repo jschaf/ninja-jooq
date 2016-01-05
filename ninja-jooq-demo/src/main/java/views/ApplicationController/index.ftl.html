@@ -22,12 +22,11 @@
     </form>
 
     <h2>All previous entries:</h2>
-    
-    <#list guestBookEntries as guestBookEntry>
-       <h3>Entry</h3>
+
+    <#list titles as title>
+        <h3>Title</h3>
        <p>
-           Email: ${guestBookEntry.email}<br/>
-           Content: ${guestBookEntry.content}   
+           ${title}
        </p>
     </#list>
 

@@ -16,11 +16,18 @@
 
 package ninja.jooq;
 
+import ninja.utils.NinjaMode;
+import ninja.utils.NinjaProperties;
+import ninja.utils.NinjaPropertiesImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
+
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NinjaJooqLifecycleTest {
@@ -37,54 +44,27 @@ public class NinjaJooqLifecycleTest {
     @Test
     public void makeSureCorrectPropertiesGetParsed() {
 
-        try {
-            // Setup and spy on the properties
-//            NinjaProperties ninjaProperties = spy(new NinjaPropertiesImpl(NinjaMode.test));
-//
-//            NinjaJooqLifecycle ninjaJooqLifecycle = new NinjaJooqLifecycle(logger, ninjaProperties);
-//
-//            // Execute the server startup
-//            ninjaJooqLifecycle.startServer();
-//
-//            // Verify that properties are correct
-//            verify(ninjaProperties).getBooleanWithDefault("ebean.ddl.generate",
-//                    true);
-//            verify(ninjaProperties)
-//                    .getBooleanWithDefault("ebean.ddl.run", true);
-//
-//            verify(ninjaProperties).getWithDefault("ebean.datasource.name",
-//                    "default");
-//
-//            verify(ninjaProperties).getWithDefault("ebean.datasource.username",
-//                    "test");
-//            verify(ninjaProperties).getWithDefault("ebean.datasource.password",
-//                    "test");
-//
-//            verify(ninjaProperties).getWithDefault(
-//                    "ebean.datasource.databaseUrl",
-//                    "jdbc:h2:mem:tests;DB_CLOSE_DELAY=-1");
-//
-//            verify(ninjaProperties).getWithDefault(
-//                    "ebean.datasource.databaseDriver", "org.h2.Driver");
-//            verify(ninjaProperties).getIntegerWithDefault(
-//                    "ebean.datasource.minConnections", 1);
-//            verify(ninjaProperties).getIntegerWithDefault(
-//                    "ebean.datasource.maxConnections", 25);
-//
-//            verify(ninjaProperties).getWithDefault(
-//                    "ebean.datasource.heartbeatsql", "select 1");
-//
-//            verify(ninjaProperties).getStringArray(
-//                    "ebean.models");
+        // Setup and spy on the properties
+        NinjaProperties ninjaProperties = spy(new NinjaPropertiesImpl(NinjaMode.test));
 
-            // be nice and stop the server afterwards
-            //ninjaEbeanServerLifecycle.stopServer();
-        } catch (Exception e) {
-            // we are getting:
-            //java.sql.SQLException: Trying to access the Connection Pool when it is shutting down
-            //this exception is expected and ignored
-            //and happens if startup and shutdown is too fast (what this test is).
-        }
+        NinjaJooqLifecycle ninjaJooqLifecycle = new NinjaJooqLifecycle(logger, ninjaProperties);
+//
+        // Execute the server startup
+        ninjaJooqLifecycle.startServer();
+
+        // InOrder because I couldn't get the tests to pass with just verify.  Mockito would confuse multiple calls
+        // to each function with different arguments incorrectly.
+        InOrder inOrder = inOrder(ninjaProperties);
+        inOrder.verify(ninjaProperties).getBooleanWithDefault("jooq.renderSchema", true);
+        inOrder.verify(ninjaProperties).getWithDefault("jooq.renderNameStyle", "QUOTED");
+        inOrder.verify(ninjaProperties).getWithDefault("jooq.renderNameStyle", "QUOTED");
+        inOrder.verify(ninjaProperties).getWithDefault("jooq.renderKeywordStyle", "LOWER");
+        inOrder.verify(ninjaProperties).getBooleanWithDefault("jooq.renderFormatted", false);
+        inOrder.verify(ninjaProperties).getWithDefault("jooq.statementType", "PREPARED_STATEMENT");
+        inOrder.verify(ninjaProperties).getBooleanWithDefault("jooq.executeLogging", true);
+        inOrder.verify(ninjaProperties).getBooleanWithDefault("jooq.executeWithOptimisticLocking", true);
+        inOrder.verify(ninjaProperties).getBooleanWithDefault("jooq.attachRecords", true);
+        inOrder.verify(ninjaProperties).getWithDefault("jooq.sqlDialect", "DEFAULT");
     }
 
 }

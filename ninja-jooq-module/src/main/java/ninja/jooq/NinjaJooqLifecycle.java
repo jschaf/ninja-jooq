@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import static ninja.jooq.NinjaJooqProperties.*;
 
 /**
- * This is an internal class of Ninja Ebeans support. It is responsible for
+ * This is an internal class of Ninja jOOQ support. It is responsible for
  * creating db connections and shutting them down upon server start / stop.
  * <p>
  * As end-user you should NOT use this method directly. Instead simply inject
@@ -73,44 +73,41 @@ public class NinjaJooqLifecycle {
         logger.info("Starting jOOQ Module.");
 
         // Setup basic parameters
-        boolean jooqRenderSchema = ninjaProperties.getBooleanWithDefault(renderSchema, true);
+        boolean renderSchema = ninjaProperties.getBooleanWithDefault(JOOQ_RENDER_SCHEMA, true);
 
         //renderMapping
 
-        String jooqRenderNameStyleString = ninjaProperties.getWithDefault(renderNameStyle, "QUOTED");
-        RenderNameStyle jooqRenderNameStyle = RenderNameStyle.fromValue(jooqRenderNameStyleString);
+        String renderNameStyleString = ninjaProperties.getWithDefault(JOOQ_RENDER_NAME_STYLE, "QUOTED");
+        RenderNameStyle renderNameStyle = RenderNameStyle.fromValue(renderNameStyleString);
+        String renderKeywordStyleString = ninjaProperties.getWithDefault(JOOQ_RENDER_KEYWORD_STYLE, "LOWER");
+        RenderKeywordStyle renderKeywordStyle = RenderKeywordStyle.valueOf(renderKeywordStyleString);
 
-        String jooqRenderKeywordStyleString = ninjaProperties.getWithDefault(renderKeywordStyle, "LOWER");
-        RenderKeywordStyle jooqRenderKeywordStyle = RenderKeywordStyle.valueOf(jooqRenderKeywordStyleString);
+        boolean renderFormatted = ninjaProperties.getBooleanWithDefault(JOOQ_RENDER_FORMATTED, false);
 
-        boolean jooqRenderFormatted = ninjaProperties.getBooleanWithDefault(renderFormatted, false);
+        String statementTypeString = ninjaProperties.getWithDefault(JOOQ_STATEMENT_TYPE, "PREPARED_STATEMENT");
+        StatementType statementType = StatementType.valueOf(statementTypeString);
 
-        String jooqStatementTypeString = ninjaProperties.getWithDefault(statementType, "PREPARED_STATEMENT");
-        StatementType jooqStatmentType = StatementType.valueOf(jooqStatementTypeString);
-
-        boolean jooqExecuteLogging = ninjaProperties.getBooleanWithDefault(executeLogging, true);
+        boolean executeLogging = ninjaProperties.getBooleanWithDefault(JOOQ_EXECUTE_LOGGING, true);
 
         // Execute listeners
 
-        boolean jooqExecuteWithOptimisticLocking = ninjaProperties.getBooleanWithDefault(
-                executeWithOptimisticLocking, true);
+        boolean executeWithOptimisticLocking = ninjaProperties
+                .getBooleanWithDefault(JOOQ_EXECUTE_WITH_OPTIMISTIC_LOCKING, true);
 
-        boolean jooqAttachRecords = ninjaProperties.getBooleanWithDefault(attachRecords, true);
+        boolean attachRecords = ninjaProperties.getBooleanWithDefault(JOOQ_ATTACH_RECORDS, true);
 
-        String jooqSqlDialect = ninjaProperties.getWithDefault(sqlDialect, "DEFAULT");
-        SQLDialect sqlDialect = SQLDialect.valueOf(jooqSqlDialect);
-
+        String sqlDialectString = ninjaProperties.getWithDefault(JOOQ_SQL_DIALECT, "DEFAULT");
+        SQLDialect sqlDialect = SQLDialect.valueOf(sqlDialectString);
 
         Settings settings = new Settings();
-
-        settings.setRenderSchema(jooqRenderSchema);
-        settings.setRenderNameStyle(jooqRenderNameStyle);
-        settings.setRenderKeywordStyle(jooqRenderKeywordStyle);
-        settings.setRenderFormatted(jooqRenderFormatted);
-        settings.setStatementType(jooqStatmentType);
-        settings.setExecuteLogging(jooqExecuteLogging);
-        settings.setExecuteWithOptimisticLocking(jooqExecuteWithOptimisticLocking);
-        settings.setAttachRecords(jooqAttachRecords);
+        settings.setRenderSchema(renderSchema);
+        settings.setRenderNameStyle(renderNameStyle);
+        settings.setRenderKeywordStyle(renderKeywordStyle);
+        settings.setRenderFormatted(renderFormatted);
+        settings.setStatementType(statementType);
+        settings.setExecuteLogging(executeLogging);
+        settings.setExecuteWithOptimisticLocking(executeWithOptimisticLocking);
+        settings.setAttachRecords(attachRecords);
 
         String connectionUrl = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_URL);
         String connectionUsername = ninjaProperties.getOrDie(NinjaConstant.DB_CONNECTION_USERNAME);

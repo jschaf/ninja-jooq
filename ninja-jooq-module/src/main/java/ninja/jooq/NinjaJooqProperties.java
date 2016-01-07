@@ -47,34 +47,34 @@ public interface NinjaJooqProperties {
     // http://www.jooq.org/xsd/jooq-runtime-2.5.0.xsd for default values
 
     // boolean
-    public final String renderSchema = "true";
+    String JOOQ_RENDER_SCHEMA = "jooq.renderSchema";
 
     // RenderMapping
     // public final String renderMapping = "";
 
     // RenderNameStyle
-    public final String renderNameStyle = "QUOTED";
+    String JOOQ_RENDER_NAME_STYLE = "jooq.renderNameStyle";
 
     // RenderKeywordStyle
-    public final String renderKeywordStyle = "LOWER";
+    String JOOQ_RENDER_KEYWORD_STYLE = "jooq.renderKeywordStyle";
 
     // boolean
-    public final String renderFormatted = "false";
+    String JOOQ_RENDER_FORMATTED = "jooq.renderFormatted";
 
     // StatementType
-    public final String statementType = "PREPARED_STATEMENT";
+    String JOOQ_STATEMENT_TYPE = "jooq.statementType";
 
     // boolean
-    public final String executeLogging = "true";
+    String JOOQ_EXECUTE_LOGGING = "jooq.executeLogging";
 
     // ExecuteListeners
     // public final String executeListeners = "";
 
     // boolean
-    public final String executeWithOptimisticLocking = "false";
+    String JOOQ_EXECUTE_WITH_OPTIMISTIC_LOCKING = "jooq.executeWithOptimisticLocking";
 
     // boolean
-    public final String attachRecords = "true";
+    String JOOQ_ATTACH_RECORDS = "jooq.attachRecords";
 
-    public final String sqlDialect = "DEFAULT";
+    String JOOQ_SQL_DIALECT = "jooq.sqlDialect";
 }

@@ -1,23 +1,14 @@
-     _______  .___ _______        ____.  _____   
-     \      \ |   |\      \      |    | /  _  \  
-     /   |   \|   |/   |   \     |    |/  /_\  \ 
-    /    |    \   /    |    \/\__|    /    |    \
-    \____|__  /___\____|__  /\________\____|__  /
-         web\/framework   \/                  \/ 
-        
+jOOQ support for the Java Ninja Web Framework
+=============================================
 
-
-jOOQ support for Ninja
-=======================
 jOOQ generates Java code from your database and lets you build type safe SQL queries through its fluent API.
 
+[![Build Status](https://travis-ci.org/jschaf/ninja-jooq.svg?branch=master)](https://travis-ci.org/jschaf/ninja-jooq)
 
 More
 ----
 
  * Source: http://github.com/ninjaframework/ninja
- * Continuous integration: https://buildhive.cloudbees.com/job/reyez/job/ninja-ebean/
- 
 
 Getting started
 ---------------

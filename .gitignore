@@ -3,12 +3,6 @@
 .project
 .settings
 .classpath
-.project
-
-# no sql DDL stuff
-*.sql
-# no h2 databases
-*.db
 
 # Intellij
 .idea/

@@ -36,8 +36,8 @@
 
 
     <build>
+
         <plugins>
-        
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -72,7 +72,7 @@
                     <url>${db.url}</url>
                     <user>${db.username}</user>
                     <locations>
-                        <location>filesystem:src/main/java/db/migration</location>
+                        <location>filesystem:${basedir}/src/main/java/db/migration</location>
                     </locations>
                 </configuration>
                 <dependencies>

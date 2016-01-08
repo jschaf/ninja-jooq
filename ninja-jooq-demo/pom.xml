@@ -48,6 +48,24 @@
                 </configuration>
             </plugin>
 
+            <!-- Copy resources to build-dir.  This must happen in generate-sources, because we need the SQL migration
+             scripts to be on the class-path when flyway-maven-plugin runs. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>process-resources</id>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                        <!-- Populate the database before jOOQ runs -->
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
@@ -57,7 +75,7 @@
                  up to date before it can generate code. -->
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>migrate</goal>
                         </goals>
@@ -71,9 +89,6 @@
                 <configuration>
                     <url>${db.url}</url>
                     <user>${db.username}</user>
-                    <locations>
-                        <location>filesystem:${basedir}/src/main/java/db/migration</location>
-                    </locations>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -139,7 +154,7 @@
                 <!-- The plugin should hook into the generate goal -->
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -190,7 +205,7 @@
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
-                    <include>**/*</include>
+                    <include>**/*.sql</include>
                 </includes>
             </resource>
         </resources>

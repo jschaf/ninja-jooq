@@ -7,11 +7,10 @@
         
 
 
-Ebean support for Ninja
+jOOQ support for Ninja
 =======================
-Ebean is a simple and powerful ORM tool.
-This plugin allows to use Ebean in any Ninja 
-application.
+jOOQ generates Java code from your database and lets you build type safe SQL queries through its fluent API.
+
 
 More
 ----
@@ -24,83 +23,100 @@ Getting started
 ---------------
 Configuring the module for your application is quite easy. There
 is a demo application that shows you how to do it.
-Check out subproject ninja-ebean-demo/pom.xml for 
+Check out subproject ninja-jooq-demo/pom.xml for 
 further information.
 
-More about Ebean: http://www.avaje.org
-
-Overview
---------
-
-This module works with a wide range of Ebean versions. It currently uses a 
-minimum version of ebean v3.2.5, but has also been tested with the latest versions
-in the 4.x series. Since this module more or less configures the ebean server,
-it should be compatible with any ebean release that continues to support those
-configuration properties.
-
-NOTE: This module only supports a single (default) ebean server.  Feel free to
-contribute code to the project if you need other features. Thanks!
+More about jOOQ: http://www.jooq.org
 
 Setup
 -----
 
-1) Add your db conf to your application.conf file. For a simple H2 database:
+1) ninja-jooq will read the database info from your application.conf.  Optionally, you can configure the following 
+   [settings](http://www.jooq.org/javadoc/3.2.3/org/jooq/conf/Settings.html).
 
-    ebean.datasource.databaseUrl=jdbc:h2:testdatabase:tests;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
- 
-For a MySQL database (you'll also need to add the MySQL driver dependency to
-your project)
-
-    ebean.ddl.generate = false
-    ebean.ddl.run = false
-    ebean.models = com.company.models.*,org.otherorg.models.Foo
-    ebean.datasource.name = NameOfEbeanServer
-    ebean.datasource.databaseUrl = jdbc:mysql://localhost:3306/dbname
-    ebean.datasource.databaseDriver = com.mysql.jdbc.Driver
-    ebean.datasource.username = root
-    ebean.datasource.password = test
-
-Please note that <code>ebean.models</code> accepts a comma delimited list of
-both class names as well as packages (just make sure it ends with .*)
-
-2) Add the ninja-ebeans dependency to your pom.xml:
+   * `jooq.renderSchema` - `(true|false)`, default: true
+   * `jooq.renderNameStyle` - `("QUOTED"|"AS_IS"|"LOWER"|"UPPER")`, default "QUOTED"
+   * `jooq.renderKeywordStyle` - `("LOWER"|"UPPER")`, default "LOWER"
+   * `jooq.renderFormatted` - `(true|false)`, default false
+   * `jooq.statementType` - `("STATIC_STATEMENT"|"PREPARED_STATEMENT")`, default "PREPARED_STATEMENT"
+   * `jooq.executeLogging` - `(true|false)`, default true
+   * `jooq.executeWithOptimisticLocking` - `(true|false)`, default true
+   * `jooq.attachRecords` - `(true|false)`, default true
+   * `jooq.sqlDialect`  - one of the values of [SQLDialect](http://www.jooq.org/javadoc/3.2.0/org/jooq/SQLDialect.html), 
+     default "DEFAULT"
+   
+2) Add the ninja-jooq dependency to your pom.xml:
 
     <dependency>
         <groupId>org.ninjaframework</groupId>
-        <artifactId>ninja-ebean-module</artifactId>
-        <version>1.4.1</version>
+        <artifactId>ninja-jooq-module</artifactId>
+        <version>0.0.1</version>
     </dependency>
     
-3) Add ebean's enhancer plugin to your pom.xml:
+3) Add the jOOQ generator plugin to your pom.xml:
 
-    <plugin>
-        <groupId>org.avaje</groupId>
-        <artifactId>ebean-maven-enhancement-plugin</artifactId>
-        <version>2.8.1</version>
-        <executions>
-            <execution>
-                <id>main</id>
-                <phase>process-classes</phase>
-                <goals>
-                    <goal>enhance</goal>
-                </goals>
-                <configuration>
-                    <packages>models</packages>
-                    <transformArgs>debug=1</transformArgs>
-                    <!-- workaround against bug in ebean: https://groups.google.com/forum/?fromgroups#!topic/ebean/w2Q6PSeXKAk%5B1-25%5D -->
-                    <classSource>${project.build.outputDirectory}</classSource>
-                    <classDestination>${project.build.outputDirectory}</classDestination>
-                </configuration>
-            </execution>
-        </executions>
-    </plugin>
+```xml
+<plugin>
+    <!-- Specify the maven code generator plugin -->
+    <groupId>org.jooq</groupId>
+    <artifactId>jooq-codegen-maven</artifactId>
+    <version>3.7.2</version>
+
+    <!-- The plugin should hook into the generate goal -->
+    <executions>
+        <execution>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+
+    <!-- Manage the plugin's dependency. In this example, we'll use a H2 database -->
+    <dependencies>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.190</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-jooq-module</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
+    <!-- Specify the plugin configuration.
+         The configuration format is the same as for the standalone code generator -->
+    <configuration>
+
+        <!-- JDBC connection parameters -->
+        <jdbc>
+            <url>${db.url}</url>
+            <user>${db.username}</user>
+        </jdbc>
+
+        <!-- Generator parameters -->
+        <generator>
+            <database>
+                <includes>.*</includes>
+                <inputSchema>FLYWAY_TEST</inputSchema>
+            </database>
+            <target>
+                <packageName>models</packageName>
+                <directory>target/generated-sources/jooq</directory>
+            </target>
+        </generator>
+    </configuration>
+</plugin>
+```
 
 4) Install the module in your conf.Module:
 
     protected void configure() {
-
         // This installs the NinjaModule and handles the lifecycle
-        install(new NinjaEbeanModule());
+        install(new NinjaJooqModule());
     }
     
     

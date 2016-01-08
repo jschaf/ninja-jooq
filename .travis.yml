@@ -4,21 +4,11 @@ language: java
 
 jdk:
   - oraclejdk8
-  - oraclejdk7
-  - openjdk7
 
-install: mvn install -U -X -DskipTests=true
+install: mvn install -U -DskipTests=true
 
 script: mvn verify -U -Dmaven.javadoc.skip=true
-
-after_success:
-  - util/deploy_snapshot.sh
-  - util/update_snapshot_docs.sh
 
 cache:
   directories:
   - $HOME/.m2
-
-branches:
-  except:
-    - gh-pages

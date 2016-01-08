@@ -205,7 +205,7 @@
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
-                    <include>**/*.sql</include>
+                    <include>**/*</include>
                 </includes>
             </resource>
         </resources>

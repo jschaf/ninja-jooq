@@ -22,46 +22,24 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import ninja.Result;
 import ninja.Results;
-import ninja.i18n.Lang;
 import ninja.params.Param;
-import org.jooq.DSLContext;
-import org.slf4j.Logger;
+import repositories.Repository;
 
 import java.util.List;
 import java.util.Map;
 
-import static models.Tables.AUTHOR;
-import static models.Tables.BOOK;
-
 @Singleton
 public class ApplicationController {
 
-    private Logger logger;
-
-    private Lang lang;
-
-    private DSLContext database;
-
     @Inject
-    public ApplicationController(Lang lang,
-                                 Logger logger,
-                                 DSLContext database) {
-        this.lang = lang;
-        this.logger = logger;
-        this.database = database;
+    private Repository repository;
 
+    public ApplicationController() {
     }
 
     public Result index() {
 
-        org.jooq.Result<?> result = database.select(BOOK.TITLE)
-                .from(AUTHOR)
-                .join(BOOK)
-                .on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
-                .orderBy(BOOK.ID.asc())
-                .fetch();
-
-        List<String> titles = result.getValues(BOOK.TITLE);
+        List<String> titles = repository.trendingTitles();
 
         Map<String, Object> toRender = Maps.newHashMap();
         toRender.put("titles", titles);
